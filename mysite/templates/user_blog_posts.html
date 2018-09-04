@@ -3,19 +3,20 @@
 <div class="container">
 	<div class="jumbotron">
 		<div align="center">
-			<h1>Welcome to the page for {{user.username}}</h1>
-			<img src="{{url_for('static',filename='profile_pics/'+user.prfile_image)}}">
+			<h1>Welcome to the page for {{ user.username }}</h1>
+			<img src="{{ url_for('static', filename='profile_pics/' + user.prfile_image ) }}">
 		</div>
 	</div>
 
-	{% for post in blog_post.items %}
+	{% for post in blog_posts.items %}
 		<h2> <a href="{{ url_for('blog_posts.blog_post',blog_post.id=post.id)}}">{{ post.title }}</a></h2>
-		Written by: <a href="{{url_for('users.user_post',username=post.author.username)}}">{{ post.author }</a>
-		<p class="text-muted">Published on: {{post.date.strftime("%Y-%m-%d)}}</p>
+		<h2>Written by: <a href="{{url_for('users.user_posts',username=post.author.username)}}"> {{ post.author }} </a></h2>
+		<p class="text-muted">Published on: {{ post.date.strftime("%Y-%m-%d")}} </p>
 	<br>
 		<p>{{post.text}}</p>
 	<br>
 	{% endfor %}
+
 </div>
 <nav aria-label='Page Navigation example'>
 	<ul class='pagination justify-content-center'>
@@ -35,3 +36,4 @@
 		{% endfor %}
 	</ul>
 </nav>
+{% endblock %}

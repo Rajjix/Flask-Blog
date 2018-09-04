@@ -17,14 +17,20 @@ def register():
     form = RegistrationForm()
 
     if form.validate_on_submit():
-        user = User(email=form.email.data,
-                username = form.username.data,
-                password = form.password.data)
+        if form.username.data != db.session.query(User.username).filter_by(username=form.username.data).scalar():
+            if form.email.data != db.session.query(User.email).filter_by(email=form.email.data).scalar():
+                user = User(email=form.email.data,
+                            username = form.username.data,
+                            password = form.password.data)
 
-        db.session.add(user)
-        db.session.commit()
-        flash('Thank for registration!')
-        return redirect(url_for('users.login'))
+                db.session.add(user)
+                db.session.commit()
+                flash('Thank for registration!')
+                return redirect(url_for('users.login'))
+            else:
+                flash("Email Already Registered")
+        else:
+            flash("Username Already Exists")
     return render_template('register.html',form=form)
 
 ###login###
@@ -33,20 +39,22 @@ def login():
     
     form = LoginForm()
     if form.validate_on_submit():
+        if form.email.data == db.session.query(User.email).filter_by(email=form.email.data).scalar():
+            user = User.query.filter_by(email=form.email.data).first()
+            if user.check_password(form.password.data):
+                login_user(user)
+                flash('Log in success')
 
-        user = User.query.filter_by(email=form.email.data).first()
+                next = request.args.get('next')
 
-        if user.check_password(form.password.data) and user is not None:
+                if next == None or not next[0]=='/':
+                    next = url_for('core.index')
 
-            login_user(user)
-            flash('Log in success')
-
-            next = request.args.get('next')
-
-            if next == None or not next[0]=='/':
-                next = url_for('core.index')
-
-            return redirect(next)
+                return redirect(next)
+            else:
+                flash("Invalid Password!")
+        else:
+            flash("Email Not Registered!")
     return render_template('login.html',form=form)
 
 ###Logout###
@@ -72,7 +80,7 @@ def account():
         current_user.email = form.email.data
         db.session.commit()
         flash('User Account Update')
-        return redirect(url_for('users.account'))
+        #return redirect(url_for('users.account'))
 
     elif request.method == "GET":
         form.username.data = current_user.username
