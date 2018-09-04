@@ -16,16 +16,20 @@ class User(db.Model,UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     profile_image = db.Column(db.String(64),nullable=False,default='default_profile.png')
     email = db.Column(db.String(64), unique=True,index=True)
+    registered_on = db.Column(db.DateTime, nullable=False)
     username = db.Column(db.String(64), unique=True,index=True)
     password_hash = db.Column(db.String(128))
+    is_active = db.Column(db.Boolean, nullable=False, default=False)
 
     posts = db.relationship('BlogPost',backref='author',lazy=True)
 
 
-    def __init__(self,email,username,password):
+    def __init__(self,email,username,password, is_active):
         self.email = email
+        self.registered_on = datetime.now()
         self.username = username
         self.password_hash = generate_password_hash(password)
+        self.is_active = is_active
 
 
     def check_password(self,password):
