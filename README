@@ -1,2 +1,5 @@
-Please make sure you add a separate configuration file in the same directory as (mysite)
-The site works fine for now but still working on improving it.
+This Website was created after studyin Flask framework for a while, The basic idea behind the site is user registration and sharing information.
+
+With simple register and login forms, and also email confirmation is required, Users are able to edit the profiles images and email and display name.
+
+User are also able to create and update their posts where the posts will be available for all users to see on the home page.
